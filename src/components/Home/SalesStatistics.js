@@ -11,12 +11,12 @@ const SaleStatistics = () => {
               background: "#FFFFFF",
               border: "none",
               borderRadius: "2px",
-              boxShadow: "0 2px 10px 0 rgba(70, 76, 79, .2);",
+              boxShadow: "0 2px 10px 0 rgba(70, 76, 79, .2)",
               width: "100%",
               height: "350px",
             }}
             title="sale-frame"
-            src="https://charts.mongodb.com/charts-shoeshoptutorial-bzbxw/embed/charts?id=28397e9a-cc52-45f2-8da0-7a9a760c2f6d&maxDataAge=3600&theme=light&autoRefresh=true"
+            src="https://charts.mongodb.com/charts-web65-project-eeftk/embed/charts?id=644a7731-af3e-407d-8d84-5cfdac9abbcb&maxDataAge=3600&theme=light&autoRefresh=true"
           ></iframe>
         </article>
       </div>
