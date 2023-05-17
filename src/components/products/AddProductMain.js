@@ -7,7 +7,8 @@ import { createProduct } from "./../../Redux/Actions/ProductActions";
 import Toast from "../LoadingError/Toast";
 import Message from "../LoadingError/Error";
 import Loading from "../LoadingError/Loading";
-
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../../firebase";
 const ToastObjects = {
   pauseOnFocusLoss: false,
   draggable: false,
@@ -20,6 +21,32 @@ const AddProductMain = () => {
   const [image, setImage] = useState("");
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
+
+  const [url, setUrl] = useState(null);
+
+  const handleImageChange = (e) => {
+    if (e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
+  };
+
+  // const handleSubmit = () => {
+  //   const imageRef = ref(storage, "image");
+  //   uploadBytes(imageRef, image)
+  //     .then(() => {
+  //       getDownloadURL(imageRef)
+  //         .then((url) => {
+  //           setUrl(url);
+  //         })
+  //         .catch((error) => {
+  //           console.log(error.message, "error getting the image url");
+  //         });
+  //       setImage(null);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error.message);
+  //     });
+  // };
 
   const dispatch = useDispatch();
 
@@ -40,6 +67,21 @@ const AddProductMain = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    const imageRef = ref(storage, "image");
+    uploadBytes(imageRef, image)
+      .then(() => {
+        getDownloadURL(imageRef)
+          .then((url) => {
+            setUrl(url);
+          })
+          .catch((error) => {
+            console.log(error.message, "error getting the image url");
+          });
+        setImage(null);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
     dispatch(createProduct(name, price, description, image, countInStock));
   };
 
@@ -49,7 +91,7 @@ const AddProductMain = () => {
       <section className="content-main" style={{ maxWidth: "1200px" }}>
         <form onSubmit={submitHandler}>
           <div className="content-header">
-            <Link to="/products" className="btn btn-danger text-white">
+            <Link to="/products" className="btn btn-dark text-white">
               Go to products
             </Link>
             <h2 className="content-title">Add product</h2>
@@ -121,15 +163,20 @@ const AddProductMain = () => {
                   </div>
                   <div className="mb-4">
                     <label className="form-label">Images</label>
-                    <input
+                    {/* <input
                       className="form-control"
                       type="text"
                       placeholder="Enter Image URL"
                       value={image}
                       required
                       onChange={(e) => setImage(e.target.value)}
+                    /> */}
+                    <input
+                      required
+                      onChange={handleImageChange}
+                      className="form-control mt-3"
+                      type="file"
                     />
-                    <input className="form-control mt-3" type="file" />
                   </div>
                 </div>
               </div>

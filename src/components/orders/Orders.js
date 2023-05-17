@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 
 const Orders = (props) => {
   const { orders } = props;
+  const [ordersArr, setOrderArr] = useState([]);
+  useEffect(() => {
+    setOrderArr(orders);
+  }, [orders]);
   return (
     <table className="table">
       <thead>
@@ -20,7 +24,7 @@ const Orders = (props) => {
         </tr>
       </thead>
       <tbody>
-        {orders.map((order) => (
+        {ordersArr.map((order) => (
           <tr key={order._id}>
             <td>
               <b>{order.user.name}</b>
