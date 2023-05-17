@@ -10,6 +10,9 @@ import { PRODUCT_UPDATE_RESET } from "../../Redux/Constants/ProductConstants";
 import { toast } from "react-toastify";
 import Message from "../LoadingError/Error";
 import Loading from "../LoadingError/Loading";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../../firebase";
+import { v4 as uuidv4 } from "uuid";
 
 const ToastObjects = {
   pauseOnFocusLoss: false,
@@ -58,25 +61,42 @@ const EditProductMain = (props) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(
-      updateProduct({
-        _id: productId,
-        name,
-        price,
-        description,
-        image,
-        countInStock,
+    const imageRef = ref(storage, uuidv4());
+    uploadBytes(imageRef, image)
+      .then(() => {
+        getDownloadURL(imageRef)
+          .then((image) => {
+            dispatch(
+              updateProduct({
+                _id: productId,
+                name,
+                price,
+                description,
+                image,
+                countInStock,
+              })
+            );
+          })
+          .catch((error) => {
+            console.log(error.message, "error getting the image url");
+          });
       })
-    );
+      .catch((error) => {
+        console.log(error.message);
+      });
   };
-
+  const handleImageChange = (e) => {
+    if (e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
+  };
   return (
     <>
       <Toast />
       <section className="content-main" style={{ maxWidth: "1200px" }}>
         <form onSubmit={submitHandler}>
           <div className="content-header">
-            <Link to="/products" className="btn btn-danger text-white">
+            <Link to="/products" className="btn btn-dark text-white">
               Go to products
             </Link>
             <h2 className="content-title">Update Product</h2>
@@ -156,12 +176,19 @@ const EditProductMain = (props) => {
                       </div>
                       <div className="mb-4">
                         <label className="form-label">Images</label>
+                        {/* <input
+                      className="form-control"
+                      type="text"
+                      placeholder="Enter Image URL"
+                      value={image}
+                      required
+                      onChange={(e) => setImage(e.target.value)}
+                    /> */}
                         <input
-                          className="form-control"
-                          type="text"
-                          value={image}
                           required
-                          onChange={(e) => setImage(e.target.value)}
+                          onChange={handleImageChange}
+                          className="form-control mt-3"
+                          type="file"
                         />
                       </div>
                     </>
