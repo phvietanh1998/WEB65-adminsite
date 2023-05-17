@@ -14,7 +14,6 @@ const OrderDetailProducts = (props) => {
       order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0)
     );
   }
-
   return (
     <table className="table border table-lg">
       <thead>

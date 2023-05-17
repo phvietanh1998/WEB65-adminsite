@@ -9,6 +9,8 @@ import Message from "../LoadingError/Error";
 import Loading from "../LoadingError/Loading";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../firebase";
+import { v4 as uuidv4 } from "uuid";
+
 const ToastObjects = {
   pauseOnFocusLoss: false,
   draggable: false,
@@ -22,31 +24,11 @@ const AddProductMain = () => {
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
 
-  const [url, setUrl] = useState(null);
-
   const handleImageChange = (e) => {
     if (e.target.files[0]) {
       setImage(e.target.files[0]);
     }
   };
-
-  // const handleSubmit = () => {
-  //   const imageRef = ref(storage, "image");
-  //   uploadBytes(imageRef, image)
-  //     .then(() => {
-  //       getDownloadURL(imageRef)
-  //         .then((url) => {
-  //           setUrl(url);
-  //         })
-  //         .catch((error) => {
-  //           console.log(error.message, "error getting the image url");
-  //         });
-  //       setImage(null);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error.message);
-  //     });
-  // };
 
   const dispatch = useDispatch();
 
@@ -67,22 +49,22 @@ const AddProductMain = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    const imageRef = ref(storage, "image");
+    const imageRef = ref(storage, uuidv4());
     uploadBytes(imageRef, image)
       .then(() => {
         getDownloadURL(imageRef)
-          .then((url) => {
-            setUrl(url);
+          .then((image) => {
+            dispatch(
+              createProduct(name, price, description, image, countInStock)
+            );
           })
           .catch((error) => {
             console.log(error.message, "error getting the image url");
           });
-        setImage(null);
       })
       .catch((error) => {
         console.log(error.message);
       });
-    dispatch(createProduct(name, price, description, url, countInStock));
   };
 
   return (
