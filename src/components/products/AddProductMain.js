@@ -82,7 +82,7 @@ const AddProductMain = () => {
       .catch((error) => {
         console.log(error.message);
       });
-    dispatch(createProduct(name, price, description, image, countInStock));
+    dispatch(createProduct(name, price, description, url, countInStock));
   };
 
   return (
